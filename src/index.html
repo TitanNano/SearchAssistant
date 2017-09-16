@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Assistant Bot</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="page-header">
+        <template id="search-box" replace>
+            <input type="search" bind-event(keyup)="view.onSearch">
+        </template>
+    </div>
+
+    <div class="content">
+
+        <template id="search-results" replace>
+            <div class="results">
+                <template id="tpl-result-items" bind-repeat(fast)="item in view.searchResults.value">
+                    <div class="result-item">
+                        <img class="image" src="{{item.image}}" alt="Owl Product">
+                        <div class="title">{{item.title}}</div>
+                        <div class="subtitle">
+                            <div class="brand">{{item.brand}}</div>
+                            <div class="price">{{item.price}}€</div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <div class="side-bar">
+            <template id="assistant-chat" replace>
+                <div class="chat card">
+                    <div class="log">
+                        <template bind-repeat(fast)="message in view.messages.getItems()">
+                            <div class="message-line">
+                                <div class="message in">{{message.text}}</div>
+                            </div>
+                        </template>
+                    </div>
+                    <input type="text">
+                </div>
+            </template>
+
+            <template id="filters" replace>
+                <div class="filter card">
+                    <template bind-repeat(fast)="filter in view.selectedPropertiesList">
+                        <div>
+                            {{filter.name}}:
+                            <template bind-repeat(fast)="value in filter.values">
+                                <span>{{value}} <span bind-if="view.notLast(filter.values, $index)">, </span></span>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

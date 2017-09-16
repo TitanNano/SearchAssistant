@@ -1,0 +1,19 @@
+[{
+    "name": "color"
+}, {
+    "name": "size"
+}, {
+    "name": "material"
+}, {
+    "name": "shape",
+    "primary": true
+}, {
+    "name": "price"
+}, {
+    "name": "stock"
+}, {
+    "name": "brand",
+    "primary": true
+}, {
+    "name": "type"
+}]
