@@ -1,0 +1,106 @@
+html,
+body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  background-color: #f4f4f4;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Roboto, sans-serif;
+  font-size: 14px; }
+
+body {
+  display: flex;
+  flex-direction: column; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0; }
+  .page-header input[type='search'] {
+    margin: 10px;
+    border: 0;
+    box-shadow: -4px 4px 2px #dedede, 0 0 5px #dedede;
+    padding: 15px;
+    width: 70%; }
+
+.content {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: row;
+  overflow: auto; }
+
+.results {
+  display: grid;
+  flex: 1 1 100%;
+  padding: 10px;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  grid-template-columns: repeat(5, 1fr);
+  grid-column-gap: 8px;
+  grid-row-gap: 8px;
+  grid-auto-rows: max; }
+
+@media (max-width: 1200px) {
+  .results {
+    grid-template-columns: repeat(4, 1fr); } }
+
+.result-item {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 8px; }
+  .result-item .image {
+    flex: 1 1 100%;
+    width: 100%; }
+  .result-item .title {
+    padding: 5px;
+    font-size: 16px;
+    font-weight: 700; }
+  .result-item .subtitle {
+    display: flex;
+    padding: 3px 5px; }
+  .result-item .brand {
+    flex: 1 1 auto; }
+
+.side-bar {
+  margin: 10px;
+  width: 20%; }
+
+.card {
+  margin: 8px;
+  box-shadow: -2px 2px 2px #dedede, 0 0 3px #dedede;
+  background-color: #fff; }
+
+.filter {
+  min-height: 300px; }
+
+.chat .log {
+  margin: 7px;
+  min-height: 250px;
+  max-height: 400px; }
+
+.chat .message-line {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-bottom: 5px; }
+
+.chat .message {
+  border-radius: 5px;
+  background-color: lightblue;
+  padding: 7px;
+  max-width: 75%; }
+
+.chat input {
+  display: block;
+  box-shadow: none;
+  padding: 10px;
+  width: 100%;
+  line-height: 22px;
+  font-size: 14px;
+  box-sizing: border-box; }
