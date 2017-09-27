@@ -34,12 +34,16 @@
                 <div class="chat card">
                     <div class="log">
                         <template bind-repeat(fast)="message in view.messages.getItems()">
-                            <div class="message-line">
-                                <div class="message in">{{message.text}}</div>
+                            <div class="message-line {{message.type}}">
+                                <div class="message">{{message.text}}</div>
                             </div>
                         </template>
                     </div>
-                    <input type="text">
+                    <div class="input">
+                        <template bind-repeat="item in view._options">
+                            <div class="option" bind-event(click)="view.onSelectOption">{{item.name}}</div>
+                        </template>
+                    </div>
                 </div>
             </template>
 

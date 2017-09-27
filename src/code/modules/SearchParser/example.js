@@ -11,7 +11,7 @@ const configResult = configureGrammar({
     values: require('../../../data/propertyValues.json')
 });
 
-console.log(configResult);
+console.log(JSON.stringify(configResult, null, 4));
 
 const result = parseSearchQuery('red blue and Pastellgelb chucks 23 600ml Löffel');
 

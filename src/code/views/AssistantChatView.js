@@ -1,9 +1,15 @@
+import DataStorage from 'application-frame/core/DataStorage';
 import ViewController from '@af-modules/databinding/prototypes/ViewController';
 
+import { ArticleStore, restoreAllArticles } from '../ArticleStore';
 import { SelectedProperties } from '../SelectedProperties';
+import {
+    getPossibleValues,
+    suggestMostCommonPropType,
+    suggestLeastCommonPropType,
+    findBetterPropertyValue,
+} from '../modules/PropertyAssistant';
 import PropertyTypes from '../PropertyTypes';
-import { ArticleStore } from '../ArticleStore';
-import { suggestMostCommonPropType } from '../modules/PropertyAssistant';
 
 const { create } = Object;
 
@@ -46,12 +52,19 @@ const MessagesList = {
 const AssistantChatView = {
     template: 'assistant-chat',
 
+    _options: null,
+
     messages: null,
 
     init() {
         this.constructor();
         this.messages = create(MessagesList).constructor();
         this.messages.when(this.scope.update.bind(this.scope));
+        ArticleStore.when(list => {
+            if (list.length === 0) {
+                this.onNoArticlesFound();
+            }
+        });
     },
 
     selectedProperties: SelectedProperties,
@@ -90,6 +103,15 @@ const AssistantChatView = {
         this.messages.add(message);
     },
 
+    postUserMessage(text) {
+        const message = {
+            type: 'in',
+            text,
+        };
+
+        this.messages.add(message);
+    },
+
     getUnusedProperties() {
         const list = this.selectedProperties.value;
         const unused = PropertyTypes.filter(prop => Object.keys(list).indexOf(prop.name) < 0);
@@ -98,13 +120,61 @@ const AssistantChatView = {
     },
 
     generateNextSugestion() {
+        const currentArticleCount = ArticleStore.value.length;
         const unused = this.getUnusedProperties();
 
-        const result = suggestMostCommonPropType(ArticleStore.value, unused);
-        const currentArticleCount = ArticleStore.value.length;
+        if (!unused) {
+            return;
+        }
 
-        this.postMessage(`We have ${currentArticleCount} Articles matching your description.`);
-        this.postMessage(`What kind of ${result.name} do you prefer?`);
+        this.postMessage(`We have ${currentArticleCount} articles matching your description.`);
+
+        const result = suggestMostCommonPropType(ArticleStore.value, unused);
+
+        if (result) {
+            this.postMessage(`What kind of ${result.name} do you prefer?`);
+            this.setOptions(getPossibleValues(result));
+        }
+    },
+
+    onNoArticlesFound() {
+        const currentTypes = Object.keys(this.selectedProperties.value)
+            .map(type => PropertyTypes.find(prop => prop.name === type));
+
+        const newArticleStore = create(DataStorage).constructor();
+
+        restoreAllArticles(newArticleStore);
+
+        const leastCommon = suggestLeastCommonPropType(newArticleStore.value, currentTypes);
+        const possibleValues = getPossibleValues(leastCommon);
+        const betterValue = findBetterPropertyValue(newArticleStore.value, possibleValues, leastCommon);
+
+        this.postMessage('Unfortnatley we don\'t have any articles matching your description.');
+        this.postMessage(`We how ever have ${betterValue.amount} articles of ${leastCommon.name} ${betterValue.value.name}`);
+    },
+
+    setOptions(optionsList) {
+        this._options = optionsList;
+    },
+
+    onSelectOption(event, { item }) {
+        if (item.type && item.name) {
+            this.selectAttribute(item);
+        }
+    },
+
+    selectAttribute(attributeValue) {
+        const props = SelectedProperties.value;
+
+        if (!props[attributeValue.type]) {
+            props[attributeValue.type] = [];
+        }
+
+        props[attributeValue.type].push(attributeValue.name);
+
+        SelectedProperties.fill(props);
+        this.postUserMessage(attributeValue.name);
+        this._options = null;
     },
 
     __proto__: ViewController,

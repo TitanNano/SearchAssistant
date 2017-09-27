@@ -1,14 +1,13 @@
 import '../modules/ArrayAll';
 
-import NetworkRequest from 'application-frame/core/NetworkRequest';
 import ViewController from '@af-modules/databinding/prototypes/ViewController';
 
 import { SelectedProperties } from '../SelectedProperties';
 import { configureGrammar, parseSearchQuery } from '../modules/SearchParser';
 import ActionChain from '../ActionChain';
+import { TypesStorage } from '../PropertyTypes';
+import PropertyValues from '../PropertyValues';
 import AssistantChatView from './AssistantChatView';
-
-const { create } = Object;
 
 const SearchBoxView = {
 
@@ -20,17 +19,16 @@ const SearchBoxView = {
         this.constructor();
         this.createOnSearchChain();
 
-        [create(NetworkRequest).constructor('./data/propertyTypes.json', {type: 'json'}),
-            create(NetworkRequest).constructor('./data/propertyValues.json', {type: 'json'})]
-        .map(request => request.send())
-            .all(promises => Promise.all(promises))
-            .then(([types, values]) => {
-                configureGrammar({
-                    fillWords: ['as', 'with', 'like', 'a'],
-                    types,
-                    values,
-                });
+        Promise.all([
+            TypesStorage.once,
+            PropertyValues.once,
+        ]).then(([types, values]) => {
+            configureGrammar({
+                fillWords: ['as', 'with', 'like', 'a'],
+                types,
+                values,
             });
+        });
     },
 
     selectedProperties: SelectedProperties,
@@ -38,7 +36,7 @@ const SearchBoxView = {
 
     createOnSearchChain() {
         this.onSearchChain = ActionChain().stage(event => {
-            return new Promise((resolve) => setTimeout(() => resolve(event), 100));
+            return new Promise((resolve) => setTimeout(() => resolve(event), 500));
         }).stage(event => {
             const searchText = event.target.value;
             const result = parseSearchQuery(searchText);

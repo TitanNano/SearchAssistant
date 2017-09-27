@@ -26,9 +26,7 @@ export const configureGrammar = function({ fillWords = [], types = [], values = 
     config.fillWords = fillWords;
     config.types = types;
     config.values = values.reduce((container, value) => {
-        let names = [];
-
-        names = names.concat(value.name.split(' ').map(item => item.toLowerCase()));
+        let names = value.name.split(' ').map(item => item.toLowerCase());
 
         if (value.aliases) {
             names = names.concat(value.aliases.map(alias => alias.split(' '))

@@ -52,8 +52,6 @@ body {
     display: grid;
     flex: 1 1 100%;
     padding: $results-gutter + 2px;
-    height: 100%;
-    overflow: auto;
     box-sizing: border-box;
     grid-template-columns: repeat(5, 1fr);
     grid-column-gap:  $results-gutter;
@@ -122,6 +120,14 @@ body {
         flex-direction: column;
         align-items: start;
         margin-bottom: 5px;
+
+        &.in {
+            align-items: end;
+
+            .message {
+                background-color: #e0e0e0;
+            }
+        }
     }
 
     .message {
@@ -131,13 +137,25 @@ body {
         max-width: 75%;
     }
 
-    input {
-        display: block;
+    .input {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        border-top: 1px #cecece solid;
         box-shadow: none;
         padding: 10px;
         width: 100%;
         line-height: 22px;
         font-size: 14px;
         box-sizing: border-box;
+    }
+
+    .option {
+        margin-right: 7px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        background-color: #e0e0e0;
+        cursor: pointer;
+        padding: 5px;
     }
 }
